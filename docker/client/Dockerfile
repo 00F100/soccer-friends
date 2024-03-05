@@ -12,10 +12,18 @@ RUN a2enmod rewrite \
         zip \
         unzip \
         libzip-dev \
+    && pecl install xdebug \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-enable xdebug \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=192.168.52.131" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
@@ -28,4 +36,4 @@ RUN chown -R www-data:www-data /var/www/html \
 
 USER php
 
-EXPOSE 80
+EXPOSE 80 9000

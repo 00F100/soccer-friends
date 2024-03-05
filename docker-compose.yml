@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: docker/client/Dockerfile
     volumes:
-      - .:/var/www/html
+      - ${PWD}/soccer-friends:/var/www/html
     depends_on:
       - db
     entrypoint: /bin/bash
@@ -24,13 +24,13 @@ services:
       DB_USERNAME: username
       DB_PASSWORD: password
 
-
   web:
     build:
       context: .
       dockerfile: docker/client/Dockerfile
     ports:
       - "80:80"
+      - "9000:9000"
     volumes:
       - .:/var/www/html
     depends_on:
@@ -60,6 +60,18 @@ services:
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - dbdata:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: username
+      PMA_PASSWORD: password
+      UPLOAD_LIMIT: 50M
+    depends_on:
+      - db
 
 volumes:
   dbdata:
