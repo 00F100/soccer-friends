@@ -1,18 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\SoccerMatchController;
+use App\Http\Controllers\WelcomeController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
 
-Route::get('/', function () {
-    return view('welcome');
+Route::prefix('players')->group(function () {
+    Route::get('/', [PlayerController::class, 'index'])->name('players.index');
+    Route::get('/create', [PlayerController::class, 'create'])->name('players.create');
+    Route::post('/create', [PlayerController::class, 'store'])->name('players.store');
+    Route::get('/update/{player}', [PlayerController::class, 'edit'])->name('players.edit');
+    Route::put('/update/{player}', [PlayerController::class, 'store'])->name('players.update');
+    Route::delete('/{player}', [PlayerController::class, 'destroy'])->name('players.destroy');
+});
+
+Route::prefix('soccerMatch')->group(function () {
+    Route::get('/', [SoccerMatchController::class, 'index'])->name('soccer_match.index');
+    Route::get('/create', [SoccerMatchController::class, 'create'])->name('soccer_match.create');
+    Route::post('/create', [SoccerMatchController::class, 'store'])->name('soccer_match.store');
+    Route::get('/update/{player}', [SoccerMatchController::class, 'edit'])->name('soccer_match.edit');
+    Route::put('/update/{player}', [SoccerMatchController::class, 'store'])->name('soccer_match.update');
+    Route::delete('/{player}', [SoccerMatchController::class, 'destroy'])->name('soccer_match.destroy');
+    Route::post('/{soccerMatch}/confirm/{player}', [SoccerMatchController::class, 'confirm'])->name('soccer_match.confirm');
 });

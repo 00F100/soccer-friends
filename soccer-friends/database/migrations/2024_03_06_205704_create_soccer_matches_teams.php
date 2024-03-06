@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('soccer_matches_player', function (Blueprint $table) {
+        Schema::create('soccer_matches_team', function (Blueprint $table) {
             $table->uuid('soccer_match_id');
             $table->uuid('player_id');
-            $table->boolean('confirm')->default(false);
+            $table->enum('side', ['A', 'B']);
             $table->timestamps();
 
             $table->foreign('soccer_match_id')->references('id')->on('soccer_matches')->onDelete('restrict');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soccer_matches_player');
+        Schema::dropIfExists('soccer_matches_team');
     }
 };

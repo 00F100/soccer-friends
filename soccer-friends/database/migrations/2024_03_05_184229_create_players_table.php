@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
-            $table->unsignedTinyInteger('level');
+            $table->integer('level');
             $table->boolean('goalkeeper');
             $table->timestamps();
         });

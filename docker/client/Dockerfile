@@ -11,19 +11,15 @@ RUN a2enmod rewrite \
         libxml2-dev \
         zip \
         unzip \
-        libzip-dev \
-    && pecl install xdebug \
-    && apt-get clean \
+        libzip-dev
+
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \ 
+    && apt-get install -y nodejs
+
+RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-enable xdebug \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
-
-RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=192.168.52.131" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 

@@ -1,0 +1,46 @@
+$level-color: #5c5c5c;
+$background-level-1: #ff5252;
+$background-level-2: #cf754c;
+$background-level-3: #fae04d;
+$background-level-4: #c6cf4c;
+$background-level-5: #7ccf4c;
+
+.level-1 { background-color: $background-level-1; }
+.level-2 { background-color: $background-level-2; }
+.level-3 {
+  background-color: $background-level-3;
+  color: $level-color;
+}
+.level-4 {
+  background-color: $background-level-4;
+  color: $level-color;
+}
+.level-5 {
+  background-color: $background-level-5;
+  color: $level-color;
+}
+
+.table {
+  > thead > tr > th {
+    color: $level-color;
+    
+    > a {
+      color: $level-color;
+      text-decoration: none;
+    }
+  }
+}
+
+.custom-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.hidden-item {
+  display: none !important;
+}
+
+.ball {
+  float: left;
+  display: contents;
+}

@@ -14,9 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('soccer_matches', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->integer('positions');
             $table->dateTime('date');
+            $table->boolean('finished')->default(false);
             $table->timestamps();
         });
     }
