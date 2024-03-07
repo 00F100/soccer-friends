@@ -7,15 +7,6 @@
     @else
         <h1>Create Soccer Match</h1>
     @endif
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
     @if(isset($soccerMatch) && $soccerMatch)
         <form action="{{ route('soccer_match.update', $soccerMatch->id) }}" method="POST">
     @else

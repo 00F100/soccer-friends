@@ -3,28 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Support\Str;
 
 class SoccerMatch extends Model
 {
-    use HasFactory;
-
     protected $table = 'soccer_matches';
-    public $incrementing = false;
-    protected $keyType = 'uuid';
     protected $fillable = ['name', 'date', 'positions', 'finished'];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
-        });
-    }
 
     public function syncPlayers(array $players)
     {

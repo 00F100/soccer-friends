@@ -7,6 +7,7 @@ use App\Models\SoccerMatch;
 use App\Models\Player;
 use App\Models\SoccerMatchesPlayer;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class SoccerMatchController extends Controller
 {

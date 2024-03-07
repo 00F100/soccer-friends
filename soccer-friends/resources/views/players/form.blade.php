@@ -7,15 +7,6 @@
     @else
         <h1>Create Player</h1>
     @endif
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
     @if($player)
         <form action="{{ route('players.update', $player->id) }}" method="POST">
     @else
