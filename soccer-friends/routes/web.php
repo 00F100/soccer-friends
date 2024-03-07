@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\SoccerMatchController;
+use App\Http\Controllers\SoccerMatchTeamController;
 use App\Http\Controllers\WelcomeController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
@@ -24,4 +25,8 @@ Route::prefix('soccerMatch')->group(function () {
     Route::put('/update/{player}', [SoccerMatchController::class, 'store'])->name('soccer_match.update');
     Route::delete('/{player}', [SoccerMatchController::class, 'destroy'])->name('soccer_match.destroy');
     Route::post('/{soccerMatch}/confirm/{player}', [SoccerMatchController::class, 'confirm'])->name('soccer_match.confirm');
+});
+
+Route::prefix('soccerMatchTeam')->group(function () {
+    Route::post('/{soccerMatch}', [SoccerMatchTeamController::class, 'create'])->name('soccer_match_team.create');
 });

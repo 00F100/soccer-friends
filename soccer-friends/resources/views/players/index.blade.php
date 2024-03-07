@@ -21,7 +21,12 @@
         <thead>
             <tr>
                 <th>
-                    <a href="{{ route('players.index', ['sort' => 'name', 'order' => request('sort') == 'name' && request('order', 'asc') == 'asc' ? 'desc' : 'asc']) }}">
+                    <a href="{{ route('players.index', [
+                        'sort' => 'name',
+                        'order' => request('sort') == 'name' && request('order', 'asc') == 'asc' ? 'desc' : 'asc',
+                        'page' => request('page', 1),
+                        'perPage' => request('perPage', 10)
+                    ]) }}">
                         Name
                         @if (request('sort') == 'name')
                             @if (request('order', 'asc') == 'asc')
@@ -35,7 +40,12 @@
                     </a>
                 </th>
                 <th>
-                    <a href="{{ route('players.index', ['sort' => 'level', 'order' => request('sort') == 'level' && request('order', 'asc') == 'asc' ? 'desc' : 'asc']) }}">
+                    <a href="{{ route('players.index', [
+                        'sort' => 'level',
+                        'order' => request('sort') == 'level' && request('order', 'asc') == 'asc' ? 'desc' : 'asc',
+                        'page' => request('page', 1),
+                        'perPage' => request('perPage', 10)
+                    ]) }}">
                         Level
                         @if (request('sort') == 'level')
                             @if (request('order', 'asc') == 'asc')
@@ -53,7 +63,12 @@
                     </a>
                 </th>
                 <th>
-                    <a href="{{ route('players.index', ['sort' => 'goalkeeper', 'order' => request('sort') == 'goalkeeper' && request('order', 'asc') == 'asc' ? 'desc' : 'asc']) }}">
+                    <a href="{{ route('players.index', [
+                        'sort' => 'goalkeeper',
+                        'order' => request('sort') == 'goalkeeper' && request('order', 'asc') == 'asc' ? 'desc' : 'asc',
+                        'page' => request('page', 1),
+                        'perPage' => request('perPage', 10)
+                    ]) }}">
                         Goalkeeper
                         @if (request('sort') == 'goalkeeper')
                             @if (request('order', 'asc') == 'asc')
@@ -87,8 +102,9 @@
                 <td>{!! $player->goalkeeper ? '&#9917;' : '' !!}</td>
                 <td>
                     <a href="{{ route('players.update', $player->id) }}" class="me-2"><i class="bi bi-pencil-square"></i></a>
+                    @if(!$player->soccerMatches()->exists() && !$player->SoccerMatchesTeam()->exists())
                     <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ $player->id }}"><i class="bi bi-trash-fill"></i></a>
-
+                    @endif
                     <div class="modal fade" id="deleteConfirmationModal{{ $player->id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -105,6 +121,10 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">Delete</button>
+                                        <input type="hidden" name="page" value="{{ request('page') }}">
+                                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                                        <input type="hidden" name="order" value="{{ request('order') }}">
+                                        <input type="hidden" name="perPage" value="{{ request('perPage') }}">
                                     </form>
                                 </div>
                             </div>
@@ -130,6 +150,8 @@
                     <option value="50"{{ request('perPage') == 50 ? ' selected' : '' }}>50</option>
                     <option value="100"{{ request('perPage') == 100 ? ' selected' : '' }}>100</option>
                 </select>
+                <input type="hidden" name="sort" value="{{ request('sort') }}">
+                <input type="hidden" name="order" value="{{ request('order') }}">
             </form>
         </div>
     </div>

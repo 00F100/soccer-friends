@@ -9,21 +9,9 @@ class PlayerController extends Controller
 {
   public function index(Request $request)
   {
-    $perPage = $request->input('perPage', 10);
-
-    $sortField = $request->get('sort', 'level');
-    $sortOrder = $request->get('order', 'desc');
-
-    if (!in_array($sortField, ['name', 'level', 'goalkeeper'])) {
-        $sortField = 'name';
-    }
-    if (!in_array($sortOrder, ['asc', 'desc'])) {
-        $sortOrder = 'asc';
-    }
-
-    $players = Player::orderBy($sortField, $sortOrder)->paginate($perPage);
-
-    return view('players.index', compact('players'));
+    $queryParams = $this->getQueryParams($request, 'name', 'asc');
+    $players = Player::orderBy($queryParams['sort'], $queryParams['order'])->paginate($queryParams['perPage']);
+    return view('players.index', compact('players', 'queryParams'));
   }
 
   public function create()
@@ -58,17 +46,15 @@ class PlayerController extends Controller
 
   public function destroy(Request $request, $id)
   {
-    $page = $request->input('page', 1);
-    $sort = $request->input('sort', 'level');
-    $order = $request->input('order', 'desc');
-    $perPage = $request->input('perPage', 10);
+    $queryParams = $this->getQueryParams($request, 'name', 'asc');
 
     $player = Player::find($id);
+
     if ($player) {
       $player->delete();
-      return redirect()->route('players.index', compact('page', 'sort', 'order', 'perPage'))->with('success', 'Player deleted successfully.');
+      return redirect()->route('players.index', $queryParams)->with('success', 'Player deleted successfully.');
     } else {
-      return redirect()->route('players.index', compact('page', 'sort', 'order', 'perPage'))->with('error', 'Player not found.');
+      return redirect()->route('players.index', $queryParams)->with('error', 'Player not found.');
     }
   }
 

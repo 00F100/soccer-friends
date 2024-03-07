@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    @if($soccer_match)
+    @if(isset($soccerMatch) && $soccerMatch)
         <h1>Edit Soccer Match</h1>
     @else
         <h1>Create Soccer Match</h1>
@@ -16,28 +16,28 @@
             </ul>
         </div>
     @endif
-    @if($soccer_match)
-        <form action="{{ route('soccer_match.update', $soccer_match->id) }}" method="POST">
+    @if(isset($soccerMatch) && $soccerMatch)
+        <form action="{{ route('soccer_match.update', $soccerMatch->id) }}" method="POST">
     @else
         <form action="{{ route('soccer_match.store') }}" method="POST">
     @endif
         @csrf
-        @if($soccer_match)
+        @if(isset($soccerMatch) && $soccerMatch)
             @method('PUT')
         @else
             @method('POST')
         @endif
         <div class="mb-3">
             <label for="name" class="form-label">Match Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ $soccer_match ? $soccer_match->name : '' }}" required>
+            <input type="text" class="form-control" id="name" name="name" value="{{ isset($soccerMatch) && $soccerMatch ? $soccerMatch->name : '' }}" required>
         </div>
         <div class="mb-3">
             <label for="date" class="form-label">Match Date</label>
-            <input type="datetime-local" class="form-control" id="date" name="date" value="{{ $soccer_match ? $soccer_match->date : '' }}" required>
+            <input type="datetime-local" class="form-control" id="date" name="date" value="{{ isset($soccerMatch) && $soccerMatch ? $soccerMatch->date : '' }}" required>
         </div>
         <div class="mb-3">
             <label for="positions" class="form-label">Positions</label>
-            <input type="number" class="form-control" id="positions" name="positions" value="{{ $soccer_match ? $soccer_match->positions : '' }}" required>
+            <input type="number" class="form-control" id="positions" name="positions" value="{{ isset($soccerMatch) && $soccerMatch ? $soccerMatch->positions : '' }}" required>
         </div>
         <div class="row">
             <h4 class="form-label">Select Players</h4>
@@ -53,7 +53,7 @@
                 <label for="allPlayers" class="form-label">Available</label>
                 <ul id="allPlayers" class="list-group custom-scroll">
                     @foreach ($players as $player)
-                        @if(!in_array($player->id, $selectedPlayers))
+                        @if(!isset($selectedPlayers) || !in_array($player->id, $selectedPlayers))
                         <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ $player->id }}" data-goalkeeper="{{ $player->goalkeeper ? 'true' : 'false' }}">
                             {{ $player->name }}
                             @if ($player->goalkeeper)
@@ -77,7 +77,7 @@
                 <label for="selectedPlayers" class="form-label">Selected</label>
                 <ul id="selectedPlayers" class="list-group custom-scroll">
                     @foreach ($players as $player)
-                        @if(in_array($player->id, $selectedPlayers))
+                        @if(isset($selectedPlayers) && in_array($player->id, $selectedPlayers))
                         <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ $player->id }}" data-goalkeeper="{{ $player->goalkeeper ? 'true' : 'false' }}">
                             {{ $player->name }}
                             @if ($player->goalkeeper)
@@ -94,7 +94,7 @@
 
         <a href="{{ route('soccer_match.index') }}" class="btn">Cancel</a>
         <button type="submit" class="btn btn-primary">
-            @if($soccer_match)
+            @if(isset($soccerMatch) && $soccerMatch)
                 Update
             @else
                 Create

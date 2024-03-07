@@ -81,21 +81,26 @@
             </tr>
         </thead>
         <tbody>
-            @if(count($soccer_matches) == 0)
+            @if(count($soccerMatches) == 0)
             <tr>
                 <td colspan="4">No Records</td>
             </tr>
             @endif
-            @foreach ($soccer_matches as $soccer_match)
+            @foreach ($soccerMatches as $soccerMatch)
             <tr>
-                <td>{{ $soccer_match->name }}</td>
-                <td>{{ $soccer_match->players_selected }}/{{ $soccer_match->positions }}</td>
-                <td>{{ $soccer_match->date }}</td>
+                <td>{{ $soccerMatch->name }}</td>
+                <td>{{ $soccerMatch->players_selected }}/{{ $soccerMatch->positions }}</td>
+                <td>{{ $soccerMatch->date }}</td>
                 <td>
-                    <a href="{{ route('soccer_match.update', $soccer_match->id) }}" class="me-2"><i class="bi bi-pencil-square"></i></a>
-                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ $soccer_match->id }}"><i class="bi bi-trash-fill"></i></a>
+                    @if(!$soccerMatch->teams()->exists())
+                    <a href="{{ route('soccer_match.update', $soccerMatch->id) }}" class="me-2"><i class="bi bi-pencil-square"></i></a>
+                    @endif
 
-                    <div class="modal fade" id="deleteConfirmationModal{{ $soccer_match->id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                    @if(!$soccerMatch->teams()->exists() && !$soccerMatch->soccerMatchesTeam()->exists() && !$soccerMatch->players()->exists())
+                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ $soccerMatch->id }}"><i class="bi bi-trash-fill"></i></a>
+                    @endif
+
+                    <div class="modal fade" id="deleteConfirmationModal{{ $soccerMatch->id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -103,11 +108,11 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete this Soccer Match "{{ $soccer_match->name }}"?
+                                    Are you sure you want to delete this Soccer Match "{{ $soccerMatch->name }}"?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form action="{{ route('soccer_match.destroy', $soccer_match->id) }}" method="POST">
+                                    <form action="{{ route('soccer_match.destroy', $soccerMatch->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="page" value="{{ request('page') }}">
@@ -128,7 +133,7 @@
 
     <div class="row mb-3">
         <div class="col-11">
-        {{ $soccer_matches->appends(['sort' => request('sort'), 'order' => request('order'), 'perPage' => request('perPage')])->links() }}
+        {{ $soccerMatches->appends(['sort' => request('sort'), 'order' => request('order'), 'perPage' => request('perPage')])->links() }}
         </div>
         <div class="col-1">
             <form action="{{ route('soccer_match.index') }}" method="GET">

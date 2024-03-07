@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Player extends Model
+class SoccerMatchesTeam extends Model
 {
-    use HasFactory;
-
-    protected $table = 'players';
+    protected $table = 'soccer_matches_team';
     public $incrementing = false;
     protected $keyType = 'uuid';
-    protected $fillable = ['name', 'level', 'goalkeeper'];
+    protected $fillable = ['soccer_match_id', 'player_id', 'side', 'level', 'goalkeeper'];
 
     protected static function boot()
     {
@@ -26,13 +23,8 @@ class Player extends Model
         });
     }
 
-    public function soccerMatches()
+    public function player()
     {
-        return $this->belongsToMany(SoccerMatch::class, 'soccer_matches_player');
-    }
-
-    public function soccerMatchesTeam()
-    {
-        return $this->hasMany(SoccerMatchesTeam::class);
+        return $this->belongsTo(Player::class, 'player_id');
     }
 }

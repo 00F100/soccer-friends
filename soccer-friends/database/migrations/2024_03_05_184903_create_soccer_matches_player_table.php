@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('soccer_matches_player', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('soccer_match_id');
             $table->uuid('player_id');
             $table->boolean('confirm')->default(false);

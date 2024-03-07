@@ -14,9 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('soccer_matches_team', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('soccer_match_id');
             $table->uuid('player_id');
-            $table->enum('side', ['A', 'B']);
+            $table->enum('side', ['A', 'B', 'R']);
+            $table->integer('level');
+            $table->boolean('goalkeeper');
             $table->timestamps();
 
             $table->foreign('soccer_match_id')->references('id')->on('soccer_matches')->onDelete('restrict');

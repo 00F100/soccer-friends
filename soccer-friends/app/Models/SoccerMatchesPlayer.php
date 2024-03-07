@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Player extends Model
+class SoccerMatchesPlayer extends Model
 {
-    use HasFactory;
-
-    protected $table = 'players';
+    protected $table = 'soccer_matches_player';
     public $incrementing = false;
     protected $keyType = 'uuid';
-    protected $fillable = ['name', 'level', 'goalkeeper'];
+    protected $fillable = ['soccer_match_id', 'player_id', 'confirm'];
 
     protected static function boot()
     {
@@ -24,15 +21,5 @@ class Player extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
-    }
-
-    public function soccerMatches()
-    {
-        return $this->belongsToMany(SoccerMatch::class, 'soccer_matches_player');
-    }
-
-    public function soccerMatchesTeam()
-    {
-        return $this->hasMany(SoccerMatchesTeam::class);
     }
 }

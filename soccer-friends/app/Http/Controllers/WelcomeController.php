@@ -10,23 +10,40 @@ class WelcomeController extends Controller
 {
   public function index(Request $request)
   {
-    $soccerMatch = SoccerMatch::where('finished', false)
-                              ->where('date', '>', now())
-                              ->orderBy('date', 'asc')
-                              ->first();
+    $soccerMatch = SoccerMatch::with(['players' => function ($query) {
+            $query->orderBy('name', 'asc');
+        }])
+        ->withCount(['players as players_confirmed_count' => function ($query) {
+            $query->where('confirm', true);
+            $query->where('goalkeeper', false);
+        }])
+        ->withCount(['players as players_confirmed_goalkeeper_count' => function ($query) {
+            $query->where('confirm', true);
+            $query->where('goalkeeper', true);
+        }])
+        ->where('finished', false)
+        ->orderBy('date', 'asc')
+        ->first();
 
-    $selectedPlayersGoalkeepers = $soccerMatch->players()->where('goalkeeper', true)->orderBy('name', 'asc')->pluck('id')->toArray();
-    $selectedPlayersField = $soccerMatch->players()->where('goalkeeper', false)->orderBy('name', 'asc')->pluck('id')->toArray();
-    $selectedPlayers = array_merge($selectedPlayersGoalkeepers, $selectedPlayersField);
-
-    $players = Player::whereIn('id', $selectedPlayers)
-                     ->with(['soccerMatches' => function($query) use ($soccerMatch) {
-                         $query->where('soccer_match_id', $soccerMatch->id)
-                               ->select('id', 'player_id', 'confirm');
-                     }])
-                     ->get();
     
-    return view('welcome', compact('soccerMatch', 'players'));
+    $soccerMatchHistories = SoccerMatch::with(['players' => function ($query) {
+          $query->orderBy('name', 'asc');
+      }])
+      ->withCount(['players as players_confirmed_count' => function ($query) {
+          $query->where('confirm', true);
+          $query->where('goalkeeper', false);
+      }])
+      ->withCount(['players as players_confirmed_goalkeeper_count' => function ($query) {
+          $query->where('confirm', true);
+          $query->where('goalkeeper', true);
+      }])
+      ->where('finished', true)
+      ->orderBy('date', 'desc')
+      ->get();
+
+    $disableCreateTeam = $soccerMatch->players_confirmed_count < ($soccerMatch->positions - 2) || $soccerMatch->players_confirmed_goalkeeper_count < 2;
+
+    return view('welcome', compact('soccerMatch', 'disableCreateTeam', 'soccerMatchHistories'));
   }
 
 }
