@@ -62,6 +62,9 @@ class SoccerMatchTeamController extends Controller
 
       $teams = $this->teamsHelper->generate($soccerMatch);
 
+      if(!$teams)
+        return redirect()->route('welcome.index')->with('error', 'Teams not found, try again.');
+
       $this->soccerMatchTeamRepository->transaction(function($repository) use ($teams, $soccerMatch, $soccerMatchId) {
         foreach($teams as $side => $team) {
           foreach($team as $player) {
@@ -71,7 +74,7 @@ class SoccerMatchTeamController extends Controller
               'side' => $side,
               'level' => $player->level,
               'goalkeeper' => $player->goalkeeper
-          ]);
+            ]);
           }
         }
         $soccerMatch['soccerMatch']->finish();

@@ -3,7 +3,6 @@
 namespace App\Repositories\Eloquent;
 
 use App\Models\SoccerMatch;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Contracts\SoccerMatchRepositoryInterface;
@@ -25,19 +24,17 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
 
   public function save($payload, string $id = null): bool
   {
-    DB::beginTransaction();
-
     try {
-      $soccerMatch = SoccerMatch::updateOrCreate(
-        compact('id'),
-        $payload
-      );
-      $soccerMatch->syncPlayers($payload['players']);
-      DB::commit();
+      $this->transaction(function() use ($payload, $id) {
+        $soccerMatch = SoccerMatch::updateOrCreate(
+          compact('id'),
+          $payload
+        );
+        $soccerMatch->syncPlayers($payload['players']);
+      });
       return true;
     } catch (\Exception $e) {
-      DB::rollback();
-      Log::error('Error on try save Soccer Match', compact('e', 'payload'));
+      Log::error('Error on try save Soccer Match', compact('e', 'id', 'payload'));
     }
 
     return false;
