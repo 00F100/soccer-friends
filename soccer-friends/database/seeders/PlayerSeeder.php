@@ -12,8 +12,8 @@ class PlayerSeeder extends Seeder
     public function run()
     {
         $goalkeepers = [
-            "Alisson Becker - Liverpool",
-            "Ederson Moraes - Manchester City",
+            "Alisson - Liverpool",
+            "Ederson - Manchester City",
             "Marcos - Palmeiras",
             "Dida - Milan",
             "Taffarel - Grêmio",
@@ -28,7 +28,7 @@ class PlayerSeeder extends Seeder
             "Victor - Atlético Mineiro",
             "Fábio - Cruzeiro",
             "Danrlei - Grêmio",
-            "Márcio - Atlético Goianiense",
+            "Márcio - A. Goianiense",
             "Waldir Peres - São Paulo",
             "Émerson Leão - Palmeiras",
             "Castilho - Fluminense",
@@ -38,7 +38,7 @@ class PlayerSeeder extends Seeder
             "Pelé - Santos",
             "Zico - Flamengo",
             "Romário - Vasco da Gama",
-            "Ronaldo Nazário - Barcelona, Inter de Milão",
+            "Ronaldo Nazário - Inter de Milão",
             "Rivaldo - Barcelona",
             "Ronaldinho Gaúcho - Barcelona",
             "Cafu - São Paulo",

@@ -8,16 +8,21 @@ use Illuminate\Support\Str;
 
 class Player extends Model
 {
-    protected $table = 'players';
-    protected $fillable = ['name', 'level', 'goalkeeper'];
+  protected $table = 'players';
+  protected $fillable = ['name', 'level', 'goalkeeper'];
 
-    public function soccerMatches()
-    {
-        return $this->belongsToMany(SoccerMatch::class, 'soccer_matches_player');
-    }
+  public function soccerMatches()
+  {
+    return $this->belongsToMany(SoccerMatch::class, 'soccer_matches_player');
+  }
 
-    public function soccerMatchesTeam()
-    {
-        return $this->hasMany(SoccerMatchesTeam::class);
-    }
+  public function soccerMatchesTeam()
+  {
+    return $this->hasMany(SoccerMatchesTeam::class);
+  }
+
+  public function soccerMatchesPlayer()
+  {
+    return $this->hasMany(SoccerMatchesPlayer::class);
+  }
 }

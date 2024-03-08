@@ -3,30 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Player;
+use App\Repositories\Contracts\PlayerRepositoryInterface;
 
 class PlayerController extends Controller
 {
+  /**
+   * Player Repository
+   * @var PlayerRepositoryInterface
+   */
+  private PlayerRepositoryInterface $playerRepository;
+
+  /**
+   * Method for construct instance of PlayerController
+   * 
+   * @param PlayerRepositoryInterface Player Repository instance
+   */
+  public function __construct(PlayerRepositoryInterface $playerRepository)
+  {
+      $this->playerRepository = $playerRepository;
+  }
+  
+  /**
+   * Method for list Players page
+   * 
+   * @param Request HTTP Request instance
+   */
   public function index(Request $request)
   {
     $queryParams = $this->getQueryParams($request, 'name', 'asc');
-    $players = Player::orderBy($queryParams['sort'], $queryParams['order'])->paginate($queryParams['perPage']);
+    $players = $this->playerRepository->paginate($queryParams['perPage'], $queryParams['sort'], $queryParams['order']);
     return view('players.index', compact('players', 'queryParams'));
   }
 
+  /**
+   * Method for create Player page
+   */
   public function create()
   {
-    $player = null;
-    return view('players.form', compact('player'));
+    return view('players.form');
   }
 
-  public function edit($id)
+  /**
+   * Method for edit Player page
+   * 
+   * @param string Player Id
+   */
+  public function edit(string $id)
   {
-      $player = Player::findOrFail($id);
+      $player = $this->playerRepository->find($id);
       return view('players.form', compact('player'));
   }
 
-  public function store(Request $request, $id = null)
+  /**
+   * Method for create/update Player
+   * 
+   * @param Request HTTP Request instance
+   * @param string Player Id
+   */
+  public function store(Request $request, string $id = null)
   {
     $data = $request->validate([
       'name' => 'required|string|max:255',
@@ -34,27 +68,27 @@ class PlayerController extends Controller
       'goalkeeper' => 'required|boolean',
     ]);
 
-    if ($id) {
-      $player = Player::findOrFail($id);
-      $player->update($request->all());
-    } else {
-      Player::create($data);
-    }
+    if (empty($id))
+      $this->playerRepository->create($data);
+    else
+      $this->playerRepository->update($id, $data);
 
     return redirect()->route('players.index')->with('success', $id ? 'Player updated!' : 'Player created!');
   }
 
-  public function destroy(Request $request, $id)
+  /**
+   * Method for hard delete Player
+   * 
+   * @param Request HTTP Request instance
+   * @param string Player Id
+   */
+  public function destroy(Request $request, string $id)
   {
     $queryParams = $this->getQueryParams($request, 'name', 'asc');
-
-    $player = Player::find($id);
-
-    if ($player) {
-      $player->delete();
+    if ($this->playerRepository->delete($id)) {
       return redirect()->route('players.index', $queryParams)->with('success', 'Player deleted successfully.');
     } else {
-      return redirect()->route('players.index', $queryParams)->with('error', 'Player not found.');
+      return redirect()->route('players.index', $queryParams)->with('error', 'Player cannot be deleted.');
     }
   }
 

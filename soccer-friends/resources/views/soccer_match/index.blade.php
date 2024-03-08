@@ -78,11 +78,11 @@
                 <td>{{ $soccerMatch->players_selected }}/{{ $soccerMatch->positions }}</td>
                 <td>{{ $soccerMatch->date }}</td>
                 <td>
-                    @if(!$soccerMatch->teams()->exists())
+                    @if(!$soccerMatch->soccerMatchesTeam()->exists())
                     <a href="{{ route('soccer_match.update', $soccerMatch->id) }}" class="me-2"><i class="bi bi-pencil-square"></i></a>
                     @endif
 
-                    @if(!$soccerMatch->teams()->exists() && !$soccerMatch->soccerMatchesTeam()->exists() && !$soccerMatch->players()->exists())
+                    @if(!$soccerMatch->soccerMatchesTeam()->exists() && !$soccerMatch->players()->exists())
                     <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ $soccerMatch->id }}"><i class="bi bi-trash-fill"></i></a>
                     @endif
 

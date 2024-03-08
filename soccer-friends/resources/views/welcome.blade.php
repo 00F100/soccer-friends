@@ -2,26 +2,6 @@
 
 @section('content')
 
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -69,7 +49,7 @@
                                     </td>
                                     <td>
                                         @if(!$player->pivot->confirm)
-                                        <form action="{{ route('soccer_match.confirm', ['soccerMatch' => $soccerMatch->id, 'player' => $player->id]) }}" method="POST">
+                                        <form action="{{ route('soccer_match_player.confirm', ['soccerMatch' => $soccerMatch->id, 'player' => $player->id]) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm">
                                                 <i class="bi bi-check-lg"></i> Confirm
@@ -103,11 +83,15 @@
                         <h5 class="text-center">Team A</h5>
                         <table class="table table-hover">
                             <tbody>
-                                @foreach($soccerMatchHistory->teams as $team)
+                                @foreach($soccerMatchHistory->soccerMatchesTeam as $team)
                                     @if($team->side == 'A')
                                     <tr>
                                         <td>{{ $team->player->name }}</td>
-                                        <td>{{ $team->level }}</td>
+                                        <td>
+                                            <span class="badge level-{{ $team->player->level }}">
+                                                {{ $team->player->level }}
+                                            </span>
+                                        </td>
                                         <td>{!! $team->player->goalkeeper ? '&#9917;' : '' !!}</td>
                                     </tr>
                                     @endif
@@ -119,11 +103,15 @@
                         <h5 class="text-center">Team B</h5>
                         <table class="table table-hover">
                             <tbody>
-                                @foreach($soccerMatchHistory->teams as $team)
+                                @foreach($soccerMatchHistory->soccerMatchesTeam as $team)
                                     @if($team->side == 'B')
                                     <tr>
                                         <td>{{ $team->player->name }}</td>
-                                        <td>{{ $team->level }}</td>
+                                        <td>
+                                            <span class="badge level-{{ $team->player->level }}">
+                                                {{ $team->player->level }}
+                                            </span>
+                                        </td>
                                         <td>{!! $team->player->goalkeeper ? '&#9917;' : '' !!}</td>
                                     </tr>
                                     @endif
@@ -131,18 +119,22 @@
                             </tbody>
                         </table>
                     </div>
-                    @if($soccerMatchHistory->teams->filter(function($team) {
+                    @if($soccerMatchHistory->soccerMatchesTeam->filter(function($team) {
                         return $team->side == 'R';
                     })->first())
                     <div class="col-12">
                         <h5 class="text-center">Reserve</h5>
                         <table class="table table-hover">
                             <tbody>
-                                @foreach($soccerMatchHistory->teams as $team)
+                                @foreach($soccerMatchHistory->soccerMatchesTeam as $team)
                                     @if($team->side == 'R')
                                     <tr>
                                         <td>{{ $team->player->name }}</td>
-                                        <td>{{ $team->level }}</td>
+                                        <td>
+                                            <span class="badge level-{{ $team->player->level }}">
+                                                {{ $team->player->level }}
+                                            </span>
+                                        </td>
                                         <td>{!! $team->player->goalkeeper ? '&#9917;' : '' !!}</td>
                                     </tr>
                                     @endif

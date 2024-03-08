@@ -2,48 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\SoccerMatch;
-use App\Models\Player;
+use App\Repositories\Contracts\SoccerMatchRepositoryInterface;
 
 class WelcomeController extends Controller
 {
-  public function index(Request $request)
+  /**
+   * Soccer Match Repository
+   * @var SoccerMatchRepositoryInterface
+   */
+  private SoccerMatchRepositoryInterface $soccerMatchRepositoryInterface;
+
+  /**
+   * Method for construct instance of WelcomeController
+   * 
+   * @param SoccerMatchRepositoryInterface Soccer Match Repository instance
+   */
+  public function __construct(
+    SoccerMatchRepositoryInterface $soccerMatchRepositoryInterface
+  )
   {
-    $soccerMatch = SoccerMatch::with(['players' => function ($query) {
-            $query->orderBy('name', 'asc');
-        }])
-        ->withCount(['players as players_confirmed_count' => function ($query) {
-            $query->where('confirm', true);
-            $query->where('goalkeeper', false);
-        }])
-        ->withCount(['players as players_confirmed_goalkeeper_count' => function ($query) {
-            $query->where('confirm', true);
-            $query->where('goalkeeper', true);
-        }])
-        ->where('finished', false)
-        ->orderBy('date', 'asc')
-        ->first();
-
-    
-    $soccerMatchHistories = SoccerMatch::with(['players' => function ($query) {
-          $query->orderBy('name', 'asc');
-      }])
-      ->withCount(['players as players_confirmed_count' => function ($query) {
-          $query->where('confirm', true);
-          $query->where('goalkeeper', false);
-      }])
-      ->withCount(['players as players_confirmed_goalkeeper_count' => function ($query) {
-          $query->where('confirm', true);
-          $query->where('goalkeeper', true);
-      }])
-      ->where('finished', true)
-      ->orderBy('date', 'desc')
-      ->get();
-
+    $this->soccerMatchRepositoryInterface = $soccerMatchRepositoryInterface;
+  }
+  
+  /**
+   * Method for Welcome Page
+   */
+  public function index()
+  {
+    $soccerMatch = $this->soccerMatchRepositoryInterface->getNextMatch();
+    $soccerMatchHistories = $this->soccerMatchRepositoryInterface->getHistoryMatches();
     $disableCreateTeam = $soccerMatch->players_confirmed_count < ($soccerMatch->positions - 2) || $soccerMatch->players_confirmed_goalkeeper_count < 2;
-
     return view('welcome', compact('soccerMatch', 'disableCreateTeam', 'soccerMatchHistories'));
   }
-
 }
