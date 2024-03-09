@@ -17,9 +17,9 @@ services:
       APP_DEBUG: "true"
       APP_URL: http://localhost
       LOG_CHANNEL: stack
-      DB_CONNECTION: mysql
+      DB_CONNECTION: pgsql
       DB_HOST: db
-      DB_PORT: 3306
+      DB_PORT: 5432
       DB_DATABASE: laravel
       DB_USERNAME: username
       DB_PASSWORD: password
@@ -42,36 +42,35 @@ services:
       APP_DEBUG: "true"
       APP_URL: http://localhost
       LOG_CHANNEL: stack
-      DB_CONNECTION: mysql
+      DB_CONNECTION: pgsql
       DB_HOST: db
-      DB_PORT: 3306
+      DB_PORT: 5432
       DB_DATABASE: laravel
       DB_USERNAME: username
       DB_PASSWORD: password
 
   db:
-    image: mysql:5.7
+    image: postgres:latest
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: username
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_DB: laravel
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
     volumes:
-      - dbdata:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
   
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+  pgadmin:
+    image: dpage/pgadmin4:latest
     ports:
       - "8080:80"
     environment:
-      PMA_HOST: db
-      PMA_USER: username
-      PMA_PASSWORD: password
-      UPLOAD_LIMIT: 50M
+      PGADMIN_DEFAULT_EMAIL: "your_email@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
     depends_on:
       - db
+    links:
+      - db:postgres
 
 volumes:
-  dbdata:
+  pgdata:

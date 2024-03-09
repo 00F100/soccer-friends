@@ -14,7 +14,8 @@ RUN a2enmod rewrite \
         libzip-dev \
         libpq-dev
 
-RUN apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - &&\
+  apt-get install -y nodejs
 
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -25,11 +26,14 @@ COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && sed -i 's!/var/www/html!/var/www/html/soccer-friends/public!g' /etc/apache2/sites-available/000-default.conf \
-    && useradd -u 1000 -m -s /bin/bash php
+COPY . .
 
-USER php
+RUN composer install \
+  && npm install \
+  && npm run build
+
+RUN chmod 777 -R /var/www/html/storage
+
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80 9000
