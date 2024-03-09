@@ -14,7 +14,7 @@
                         'perPage' => request('perPage', 10)
                     ]) }}">
                         Name
-                        @if (request('sort') == 'name')
+                        @if (request('sort', 'name') == 'name')
                             @if (request('order', 'asc') == 'asc')
                                 <i class="bi bi-arrow-down-short"></i>
                             @else
@@ -40,11 +40,7 @@
                                 <i class="bi bi-arrow-up-short"></i>
                             @endif
                         @else
-                            @if (request('sort') == '')
-                                <i class="bi bi-arrow-up-short"></i>
-                            @else
-                                <i class="bi bi-dash-lg"></i>
-                            @endif
+                            <i class="bi bi-dash-lg"></i>
                         @endif
                     </a>
                 </th>
@@ -125,6 +121,7 @@
     <div class="row mb-3">
         <div class="col-11">
         {{ $players->appends(['sort' => request('sort'), 'order' => request('order'), 'perPage' => request('perPage')])->links() }}
+        {{ $totalPlayers }}  players
         </div>
         <div class="col-1">
             <form action="{{ route('players.index') }}" method="GET">
@@ -136,8 +133,8 @@
                     <option value="50"{{ request('perPage') == 50 ? ' selected' : '' }}>50</option>
                     <option value="100"{{ request('perPage') == 100 ? ' selected' : '' }}>100</option>
                 </select>
-                <input type="hidden" name="sort" value="{{ request('sort') }}">
-                <input type="hidden" name="order" value="{{ request('order') }}">
+                <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+                <input type="hidden" name="order" value="{{ request('order', 'asc') }}">
             </form>
         </div>
     </div>

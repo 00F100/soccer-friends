@@ -22,8 +22,8 @@
                             Player
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownPlayer">
-                            <li><a class="dropdown-item" href="/players">All</a></li>
-                            <li><a class="dropdown-item" href="/players/create">Create</a></li>
+                            <li><a class="dropdown-item" href="{{ route('players.index') }}">All</a></li>
+                            <li><a class="dropdown-item" href="{{ route('players.create') }}">Create</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -31,8 +31,8 @@
                             Soccer Match
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownSoccerMatch">
-                            <li><a class="dropdown-item" href="/soccerMatch">All</a></li>
-                            <li><a class="dropdown-item" href="/soccerMatch/create">Create</a></li>
+                            <li><a class="dropdown-item" href="{{ route('soccer_match.index') }}">All</a></li>
+                            <li><a class="dropdown-item" href="{{ route('soccer_match.create') }}">Create</a></li>
                         </ul>
                     </li>
                 </ul>

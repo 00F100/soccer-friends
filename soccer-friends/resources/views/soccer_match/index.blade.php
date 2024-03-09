@@ -47,12 +47,12 @@
                 <th>
                     <a href="{{ route('soccer_match.index', [
                         'sort' => 'date',
-                        'order' => request('sort') == 'date' && request('order', 'asc') == 'asc' ? 'desc' : 'asc',
+                        'order' => request('sort', 'date') == 'date' && request('order', 'asc') == 'asc' ? 'desc' : 'asc',
                         'page' => request('page', 1),
                         'perPage' => request('perPage', 10)
                     ]) }}">
                         Date
-                        @if (request('sort') == 'date')
+                        @if (request('sort', 'date') == 'date')
                             @if (request('order', 'asc') == 'asc')
                                 <i class="bi bi-arrow-down-short"></i>
                             @else
@@ -120,6 +120,7 @@
     <div class="row mb-3">
         <div class="col-11">
         {{ $soccerMatches->appends(['sort' => request('sort'), 'order' => request('order'), 'perPage' => request('perPage')])->links() }}
+        {{ $totalSoccerMatches }}  soccer matches
         </div>
         <div class="col-1">
             <form action="{{ route('soccer_match.index') }}" method="GET">
@@ -131,8 +132,8 @@
                     <option value="50"{{ request('perPage') == 50 ? ' selected' : '' }}>50</option>
                     <option value="100"{{ request('perPage') == 100 ? ' selected' : '' }}>100</option>
                 </select>
-                <input type="hidden" name="sort" value="{{ request('sort') }}">
-                <input type="hidden" name="order" value="{{ request('order') }}">
+                <input type="hidden" name="sort" value="{{ request('sort', 'date') }}">
+                <input type="hidden" name="order" value="{{ request('order', 'asc') }}">
             </form>
         </div>
     </div>

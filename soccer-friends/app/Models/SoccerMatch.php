@@ -8,9 +8,21 @@ use Illuminate\Support\Str;
 
 class SoccerMatch extends Model
 {
+  /**
+   * Table Soccer Match Model
+   * @param string
+   */
   protected $table = 'soccer_matches';
+
+  /**
+   * Fields for Soccer Match Model
+   * @param array
+   */
   protected $fillable = ['name', 'date', 'positions', 'finished'];
 
+  /**
+   * Method for save Players into Soccer Match Player
+   */
   public function syncPlayers(array $players)
   {
     $this->players()->detach();
@@ -26,6 +38,9 @@ class SoccerMatch extends Model
     }
   }
 
+  /**
+   * Get Player that belong to the Soccer Match Player
+   */
   public function players()
   {
     return $this->belongsToMany(Player::class, 'soccer_matches_player')
@@ -33,18 +48,27 @@ class SoccerMatch extends Model
       ->withPivot('confirm');
   }
 
+  /**
+   * Get all of the Soccer Matches Team for the Soccer Match.
+   */
   public function soccerMatchesTeam()
   {
     return $this->hasMany(SoccerMatchesTeam::class, 'soccer_match_id')
       ->orderBy('goalkeeper', 'desc')
       ->orderBy('level', 'desc');
   }
-  
+
+  /**
+   * Get all of the Soccer Matches Player for the Soccer Match.
+   */
   public function soccerMatchesPlayer()
   {
     return $this->hasMany(SoccerMatchesPlayer::class);
   }
 
+  /**
+   * Change finish state and save Soccer Match
+   */
   public function finish() {
     $this->finished = true;
     $this->save();

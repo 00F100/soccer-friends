@@ -10,9 +10,21 @@ abstract class Model extends EloquentModel
 {
     use HasFactory;
 
+    /**
+     * Disable incrementing for models
+     * @var bool
+     */
     public $incrementing = false;
+
+    /**
+     * Key type UUID for primary keys
+     * @param string
+     */
     protected $keyType = 'uuid';
 
+    /**
+     * Change boot method for use UUID
+     */
     protected static function boot()
     {
       parent::boot();

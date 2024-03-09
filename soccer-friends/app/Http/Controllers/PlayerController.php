@@ -32,7 +32,8 @@ class PlayerController extends Controller
   {
     $queryParams = $this->getQueryParams($request, 'name', 'asc');
     $players = $this->playerRepository->paginate($queryParams['perPage'], $queryParams['sort'], $queryParams['order']);
-    return view('players.index', compact('players', 'queryParams'));
+    $totalPlayers = $this->playerRepository->count();
+    return view('players.index', compact('players', 'queryParams', 'totalPlayers'));
   }
 
   /**
@@ -68,12 +69,10 @@ class PlayerController extends Controller
       'goalkeeper' => 'required|boolean',
     ]);
 
-    if (empty($id))
-      $this->playerRepository->create($data);
-    else
-      $this->playerRepository->update($id, $data);
-
-    return redirect()->route('players.index')->with('success', $id ? 'Player updated!' : 'Player created!');
+    if ($this->playerRepository->save($data, $id)) {
+      return redirect()->route('players.index')->with('success', $id ? 'Player updated!' : 'Player created!');
+    }
+    return back()->with('error', 'Error on try save Soccer Match');
   }
 
   /**

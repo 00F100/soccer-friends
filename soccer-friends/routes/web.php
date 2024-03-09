@@ -18,7 +18,7 @@ Route::prefix('players')->group(function () {
   Route::delete('/{player}', [PlayerController::class, 'destroy'])->name('players.destroy');
 });
 
-Route::prefix('soccerMatch')->group(function () {
+Route::prefix('matches')->group(function () {
   Route::get('/', [SoccerMatchController::class, 'index'])->name('soccer_match.index');
   Route::get('/create', [SoccerMatchController::class, 'create'])->name('soccer_match.create');
   Route::post('/create', [SoccerMatchController::class, 'store'])->name('soccer_match.store');
@@ -27,10 +27,10 @@ Route::prefix('soccerMatch')->group(function () {
   Route::delete('/{player}', [SoccerMatchController::class, 'destroy'])->name('soccer_match.destroy');
 });
 
-Route::prefix('SoccerMatchPlayer')->group(function () {
+Route::prefix('matches_player')->group(function () {
   Route::post('/{soccerMatch}/confirm/{player}', [SoccerMatchPlayerController::class, 'confirm'])->name('soccer_match_player.confirm');
 });
 
-Route::prefix('soccerMatchTeam')->group(function () {
+Route::prefix('teams')->group(function () {
   Route::post('/{soccerMatch}', [SoccerMatchTeamController::class, 'create'])->name('soccer_match_team.create');
 });

@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const sortedItems = items.sort((a, b) => {
             const goalieA = a.dataset.goalkeeper === 'true' ? 0 : 1;
             const goalieB = b.dataset.goalkeeper === 'true' ? 0 : 1;
-            if (goalieA !== goalieB) return goalieA - goalieB; // Prioriza goleiros
-            return a.textContent.localeCompare(b.textContent); // Ordena por nome
+            if (goalieA !== goalieB) return goalieA - goalieB;
+            return a.textContent.localeCompare(b.textContent);
         });
 
         sortedItems.forEach(item => list.appendChild(item));

@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements SoccerMatchRepositoryInterface
 {
+  /**
+   * Get Soccer Match paginates, ordered and with count players
+   * 
+   * @param int Per page records
+   * @param string Sort records
+   * @param string Order records
+   */
   public function paginateWithCountPlayersSelected(int $perPage = 10, string $sort = 'name', string $order = 'asc'): LengthAwarePaginator
   {
     return SoccerMatch::withCount('players as players_selected')
@@ -17,11 +24,30 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
       ->paginate($perPage);
   }
 
+  /**
+   * Get Soccer Match by id
+   * 
+   * @param string Soccer Match Id
+   */
   public function find(string $id): SoccerMatch
   {
     return SoccerMatch::findOrFail($id);
   }
 
+  /**
+   * Get Soccer Match count
+   */
+  public function count(): int
+  {
+    return SoccerMatch::count();
+  }
+
+  /**
+   * Create/Update Soccer Match using payload
+   * 
+   * @param array Soccer Match payload
+   * @param string Soccer Match Id
+   */
   public function save($payload, string $id = null): bool
   {
     try {
@@ -40,6 +66,11 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
     return false;
   }
 
+  /**
+   * Hard delete Soccer Match
+   * 
+   * @param string Soccer Match Id
+   */
   public function delete(string $id): bool
   {
     $soccerMatch = $this->find($id);
@@ -62,6 +93,11 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
     return $soccerMatch->delete();
   }
 
+  /**
+   * Get Selected Players for Soccer Match
+   * 
+   * @param SoccerMatch Soccer Match Model
+   */
   public function getSelectedPlayers(SoccerMatch $soccerMatch): array
   {
     return $soccerMatch
@@ -72,6 +108,9 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
       ->toArray();
   }
 
+  /**
+   * Get Soccer Match with Player counting confirmed
+   */
   public function getSoccerMatchForGenerateTeam(string $soccerMatchId)
   {
     $soccerMatch = SoccerMatch::with(['players' => function ($query) {
@@ -116,16 +155,28 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
     return compact('enableGoalkeeper', 'enablePlayers', 'soccerMatch');
   }
 
+  /**
+   * Get Next Soccer Match
+   */
   public function getNextMatch(): SoccerMatch
   {
     return $this->getMatches(false, 'asc');
   }
 
+  /**
+   * Get History Soccer Match
+   */
   public function getHistoryMatches(): Collection
   {
     return $this->getMatches(true, 'desc');
   }
 
+  /**
+   * Method for get Soccer Match next and history
+   * 
+   * @param bool If Soccer Match finished
+   * @param string Order for date asc/desc
+   */
   private function getMatches(bool $state, string $order): Collection | SoccerMatch
   {
     $result = SoccerMatch::with(['players' => function ($query) {

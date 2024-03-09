@@ -6,5 +6,10 @@ use App\Models\SoccerMatchesTeam;
 
 interface SoccerMatchTeamRepositoryInterface
 {
-    public function create($payload): SoccerMatchesTeam;
+  /**
+   * Method for create Soccer Match Team
+   * 
+   * @param array Soccer Match Team payload
+   */
+  public function create($payload): SoccerMatchesTeam;
 }

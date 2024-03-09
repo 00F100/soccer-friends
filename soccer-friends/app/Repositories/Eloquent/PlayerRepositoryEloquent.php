@@ -10,16 +10,31 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PlayerRepositoryEloquent extends RepositoryEloquent implements PlayerRepositoryInterface
 {
+  /**
+   * Get Players paginates and ordered
+   * 
+   * @param int Per page records
+   * @param string Sort records
+   * @param string Order records
+   */
   public function paginate(int $perPage = 10, string $sort = 'name', string $order = 'asc'): LengthAwarePaginator
   {
     return Player::orderBy($sort, $order)->paginate($perPage);
   }
 
+  /**
+   * Get Player by id
+   * 
+   * @param string Player Id
+   */
   public function find(string $id): Player
   {
     return Player::findOrFail($id);
   }
 
+  /**
+   * Get Players Collection
+   */
   public function get(): Collection
   {
     return Player::orderBy('goalkeeper', 'desc')
@@ -27,17 +42,33 @@ class PlayerRepositoryEloquent extends RepositoryEloquent implements PlayerRepos
       ->get();
   }
 
-  public function create($payload): Player
+  /**
+   * Get Players count
+   */
+  public function count(): int
   {
-    return Player::create($payload);
+    return Player::count();
   }
 
-  public function update(string $id, $payload): bool
+  /**
+   * Create/Update Player using payload
+   * 
+   * @param array Player payload
+   * @param string Player Id
+   */
+  public function save($payload, string $id = null): Player
   {
-    $player = $this->find($id);
-    return $player->update($payload);
+    return Player::updateOrCreate(
+      compact('id'),
+      $payload
+    );
   }
 
+  /**
+   * Hard delete Player
+   * 
+   * @param string Player Id
+   */
   public function delete(string $id): bool
   {
     $player = $this->find($id);

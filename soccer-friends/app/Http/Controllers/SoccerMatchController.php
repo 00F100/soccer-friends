@@ -42,9 +42,10 @@ class SoccerMatchController extends Controller
    */
   public function index(Request $request)
   {
-    $queryParams = $this->getQueryParams($request, 'name', 'asc');
+    $queryParams = $this->getQueryParams($request, 'date', 'asc');
     $soccerMatches = $this->soccerMatchRepository->paginateWithCountPlayersSelected($queryParams['perPage'], $queryParams['sort'], $queryParams['order']);
-    return view('soccer_match.index', compact('soccerMatches'));
+    $totalSoccerMatches = $this->playerRepository->count();
+    return view('soccer_match.index', compact('soccerMatches', 'totalSoccerMatches'));
   }
 
   /**
@@ -91,7 +92,7 @@ class SoccerMatchController extends Controller
           }
         },
       ],
-      'players.*' => 'string'
+      'players' => 'array'
     ]);
 
     if ($this->soccerMatchRepository->save($data, $id)) {
