@@ -109,50 +109,18 @@ class SoccerMatchRepositoryEloquent extends RepositoryEloquent implements Soccer
   }
 
   /**
-   * Get Soccer Match with Player counting confirmed
+   * Get Soccer Match with Player confirmed
+   * 
+   * @param string Soccer Match Id
    */
-  public function getSoccerMatchForGenerateTeam(string $soccerMatchId)
+  public function getSoccerMatchWithPlayersConfirmed(string $soccerMatchId): SoccerMatch
   {
-    $soccerMatch = SoccerMatch::with(['players' => function ($query) {
+    return SoccerMatch::with(['players' => function ($query) {
       $query->orderBy('name', 'asc');
       $query->where('confirm', true);
     }])
     ->where('id', $soccerMatchId)
     ->first();
-
-    if(!$soccerMatch) {
-      Log::error('Soccer Match not found', compact('soccerMatchId'));
-      return null;
-    }
-
-    if ($soccerMatch->players->count() < $soccerMatch->positions) {
-      Log::error('More players are needed to start the match', compact('soccerMatchId'));
-      return null;
-    }
-
-    $goalkeepers = $soccerMatch->players->filter(function($player) {
-      return $player->goalkeeper == true;
-    });
-
-    if (count($goalkeepers) < 2) {
-      Log::error('More goalkeepers are needed to start the match', compact('soccerMatchId'));
-      return null;
-    }
-
-    $enableGoalkeeper = [];
-    $enablePlayers = [];
-
-    foreach($soccerMatch->players as $player) {
-        if ($player->pivot->confirm) {
-            if ($player->goalkeeper) {
-                $enableGoalkeeper[] = $player;
-            } else {
-                $enablePlayers[] = $player;
-            }
-        }
-    }
-
-    return compact('enableGoalkeeper', 'enablePlayers', 'soccerMatch');
   }
 
   /**

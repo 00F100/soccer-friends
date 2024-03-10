@@ -46,21 +46,42 @@ class SoccerMatchTeamController extends Controller
   }
 
   /**
-   * Method for create teams
+   * Method for create teams using Soccer Match
    * 
    * @param string Soccer Match Id
    */
   public function create(string $soccerMatchId)
   {
-    $soccerMatch = $this->soccerMatchRepositoryInterface->getSoccerMatchForGenerateTeam($soccerMatchId);
-
-    if(!$soccerMatch) {
-        return redirect()->route('welcome.index')->with('error', 'Soccer Match not found.');
-    }
-
     try {
 
-      $teams = $this->teamsHelper->generate($soccerMatch);
+      $soccerMatch = $this->soccerMatchRepositoryInterface->getSoccerMatchWithPlayersConfirmed($soccerMatchId);
+  
+      if(!$soccerMatch) {
+          return back()->with('error', 'Soccer Match not found.');
+      }
+  
+      $goalkeepers = $soccerMatch->players->filter(function($player) {
+        return $player->goalkeeper == true;
+      });
+  
+      if (count($goalkeepers) < 2) {
+        return back()->with('error', 'More goalkeepers are needed to start the match');
+        return null;
+      }
+
+      if ($soccerMatch->players->count() < $soccerMatch->positions) {
+        return back()->with('error', 'More players are needed to start the match');
+        return null;
+      }
+  
+      $playersGoalkeeper = $this->teamsHelper->getPlayersByFunction($soccerMatch, true);
+      $players = $this->teamsHelper->getPlayersByFunction($soccerMatch, false);
+  
+      if(!$playersGoalkeeper || count($playersGoalkeeper) == 0 || !$players || count($players) == 0) {
+          return back()->with('error', 'Soccer Match Players fail on try find enabled players.');
+      }
+
+      $teams = $this->teamsHelper->generate($soccerMatch, $playersGoalkeeper, $players);
 
       if(!$teams)
         return redirect()->route('welcome.index')->with('error', 'Teams not found, try again.');
@@ -77,7 +98,7 @@ class SoccerMatchTeamController extends Controller
             ]);
           }
         }
-        $soccerMatch['soccerMatch']->finish();
+        $soccerMatch->finish();
       });
 
     } catch (\Exception $e) {

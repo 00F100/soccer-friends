@@ -52,9 +52,11 @@ interface SoccerMatchRepositoryInterface
   public function getSelectedPlayers(SoccerMatch $soccerMatch): array;
 
   /**
-   * Get Soccer Match with Player counting confirmed
+   * Get Soccer Match with Player confirmed
+   * 
+   * @param string Soccer Match Id
    */
-  public function getSoccerMatchForGenerateTeam(string $soccerMatchId);
+  public function getSoccerMatchWithPlayersConfirmed(string $soccerMatchId): SoccerMatch;
 
   /**
    * Get Next Soccer Match

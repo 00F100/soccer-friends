@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 abstract class RepositoryEloquent {
+
+  /**
+   * Method for execute transaction for repositories
+   * 
+   * @param Function Callback for transaction
+   */
   public function transaction($callback)
   {
     DB::beginTransaction();
