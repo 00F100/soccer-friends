@@ -54,7 +54,7 @@ Start a container with Bash, PHP, Npm, etc
 bin/host/client
 ```
 
-Start a container for browser for view application using [localhost](http://localhost).
+Start a container for browser view application using [localhost](http://localhost).
 
 ```sh
 bin/host/web
