@@ -1,4 +1,10 @@
 #!/bin/bash
 
+rm -rf node_modules
+rm -rf vendor
+rm -rf .env
+rm -rf public/build
 composer install
-php artisan migrate --seed
+npm install
+npm run build
+php artisan migrate
